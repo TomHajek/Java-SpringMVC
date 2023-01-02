@@ -1,0 +1,31 @@
+services:
+  spring-mvc-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    logging:
+      options:
+        max-file: '5'
+        max-size: 10m
+      driver: json-file
+    environment:
+      - "JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" #IntelliJ Remote Debugging container
+    ports:
+      - "8082:8082"
+      - "5005:5005" #IntelliJ Remote Debugging container
+    depends_on:
+      - spring_mvc_demo_db
+
+  spring_mvc_demo_db:
+    build:
+      context: .
+      dockerfile: DockerDB
+    logging:
+      options:
+        max-file: '5'
+        max-size: 10m
+    environment:
+      POSTGRES_USERNAME: root
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5423:5432"
